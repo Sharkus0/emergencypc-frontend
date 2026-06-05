@@ -34,6 +34,16 @@ export default function App() {
   const [emailStep, setEmailStep] = useState('idle'); // 'idle', 'sent', 'verified'
   const [verificationCode, setVerificationCode] = useState('');
 
+  // --- RESPONSYWNOŚĆ (DYNAMICZNA SZEROKOŚĆ OKNA) ---
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  const isMobile = windowWidth <= 768;
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // --- SYSTEM TOAST (POWIADOMIENIA CYBERPUNK) ---
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
   const triggerToast = (message, type = 'success') => {
@@ -93,7 +103,7 @@ export default function App() {
           if (entry.isIntersecting) entry.target.classList.add('active');
         });
       },
-      { threshold: 0.08 }
+      { threshold: 0.05 }
     );
     document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
     return () => observer.disconnect();
@@ -358,52 +368,52 @@ export default function App() {
 
   const styles = {
     body: { backgroundColor: theme.bg, color: theme.text, minHeight: '100vh', fontFamily: "'Outfit', sans-serif", overflowX: 'hidden' },
-    nav: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 60px', backgroundColor: 'rgba(10, 13, 20, 0.85)', backdropFilter: 'blur(15px)', borderBottom: `1px solid ${theme.cyan}33`, position: 'sticky', top: 0, zIndex: 1000 },
-    logo: { fontSize: '24px', fontWeight: 900, letterSpacing: '3px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' },
+    nav: { display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', alignItems: 'center', gap: isMobile ? '15px' : '0', padding: isMobile ? '15px' : '20px 60px', backgroundColor: 'rgba(10, 13, 20, 0.85)', backdropFilter: 'blur(15px)', borderBottom: `1px solid ${theme.cyan}33`, position: 'sticky', top: 0, zIndex: 1000 },
+    logo: { fontSize: isMobile ? '20px' : '24px', fontWeight: 900, letterSpacing: '3px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' },
     cyanText: { color: theme.cyan, textShadow: '0 0 15px rgba(0,240,255,0.6)' },
-    menu: { display: 'flex', gap: '40px', listStyle: 'none', alignItems: 'center', margin: 0, padding: 0 },
-    link: { color: theme.muted, textDecoration: 'none', fontWeight: 500, fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1.5px', cursor: 'pointer', background: 'none', border: 'none' },
-    navBtn: (color = theme.cyan) => ({ background: 'transparent', border: `1px solid ${color}`, color: color, padding: '10px 22px', borderRadius: '4px', fontWeight: 800, cursor: 'pointer', textTransform: 'uppercase', fontSize: '12px', letterSpacing: '1.5px', boxShadow: `0 0 10px ${color}33` }),
-    hero: { position: 'relative', padding: '130px 20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', background: 'radial-gradient(circle at center, rgba(0,240,255,0.04) 0%, rgba(4,6,10,1) 70%)' },
-    badge: { color: theme.cyan, border: `1px solid ${theme.cyan}`, padding: '8px 22px', borderRadius: '4px', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2.5px', marginBottom: '24px', background: 'rgba(0, 240, 255, 0.03)' },
-    h1: { fontSize: '64px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '-1px', marginBottom: '25px', lineHeight: 1.1 },
-    heroP: { fontSize: '18px', color: theme.muted, maxWidth: '750px', marginBottom: '45px', fontWeight: 300, lineHeight: 1.65 },
-    heroBtn: { padding: '18px 45px', backgroundColor: 'transparent', color: theme.cyan, border: `1px solid ${theme.cyan}`, borderRadius: '4px', fontSize: '15px', fontWeight: 700, cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '1.5px', boxShadow: hoveredBtn ? theme.glow : 'none', transform: hoveredBtn ? 'scale(1.02)' : 'scale(1)', transition: 'all 0.3s ease' },
-    statsSec: { display: 'flex', gap: '50px', justifyContent: 'center', margin: '60px auto 0 auto', maxWidth: '900px', flexWrap: 'wrap' },
-    statBox: { textAlign: 'center', padding: '10px 35px' },
-    statNum: { fontSize: '36px', fontWeight: 800, color: '#fff' },
-    statLabel: { color: theme.muted, fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1.5px', marginTop: '6px', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' },
+    menu: { display: 'flex', flexDirection: isMobile ? 'row' : 'row', flexWrap: 'wrap', justifyContent: 'center', gap: isMobile ? '15px' : '40px', listStyle: 'none', alignItems: 'center', margin: 0, padding: 0 },
+    link: { color: theme.muted, textDecoration: 'none', fontWeight: 500, fontSize: isMobile ? '11px' : '13px', textTransform: 'uppercase', letterSpacing: '1.5px', cursor: 'pointer', background: 'none', border: 'none' },
+    navBtn: (color = theme.cyan) => ({ background: 'transparent', border: `1px solid ${color}`, color: color, padding: isMobile ? '6px 14px' : '10px 22px', borderRadius: '4px', fontWeight: 800, cursor: 'pointer', textTransform: 'uppercase', fontSize: isMobile ? '10px' : '12px', letterSpacing: '1.5px', boxShadow: `0 0 10px ${color}33` }),
+    hero: { position: 'relative', padding: isMobile ? '70px 20px' : '130px 20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', background: 'radial-gradient(circle at center, rgba(0,240,255,0.04) 0%, rgba(4,6,10,1) 70%)' },
+    badge: { color: theme.cyan, border: `1px solid ${theme.cyan}`, padding: '8px 22px', borderRadius: '4px', fontSize: isMobile ? '10px' : '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2.5px', marginBottom: '24px', background: 'rgba(0, 240, 255, 0.03)' },
+    h1: { fontSize: isMobile ? '32px' : '64px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '-1px', marginBottom: '25px', lineHeight: 1.2 },
+    heroP: { fontSize: isMobile ? '15px' : '18px', color: theme.muted, maxWidth: '750px', marginBottom: '45px', fontWeight: 300, lineHeight: 1.65 },
+    heroBtn: { padding: isMobile ? '14px 28px' : '18px 45px', backgroundColor: 'transparent', color: theme.cyan, border: `1px solid ${theme.cyan}`, borderRadius: '4px', fontSize: isMobile ? '13px' : '15px', fontWeight: 700, cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '1.5px', boxShadow: hoveredBtn ? theme.glow : 'none', transform: hoveredBtn ? 'scale(1.02)' : 'scale(1)', transition: 'all 0.3s ease' },
+    statsSec: { display: 'flex', gap: isMobile ? '20px' : '50px', justifyContent: 'center', margin: '60px auto 0 auto', maxWidth: '900px', flexWrap: 'wrap' },
+    statBox: { textAlign: 'center', padding: isMobile ? '5px 15px' : '10px 35px' },
+    statNum: { fontSize: isMobile ? '28px' : '36px', fontWeight: 800, color: '#fff' },
+    statLabel: { color: theme.muted, fontSize: isMobile ? '11px' : '13px', textTransform: 'uppercase', letterSpacing: '1.5px', marginTop: '6px', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' },
     liveDot: { width: '8px', height: '8px', backgroundColor: theme.green, borderRadius: '50%', boxShadow: `0 0 10px ${theme.green}` },
-    servicesSec: { padding: '100px 60px', backgroundColor: theme.card, borderTop: `1px solid ${theme.border}`, borderBottom: `1px solid ${theme.border}` },
-    secTitle: { textAlign: 'center', fontSize: '42px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '15px' },
-    secSub: { textAlign: 'center', color: theme.cyan, fontSize: '14px', textTransform: 'uppercase', letterSpacing: '3px', marginBottom: '70px' },
-    srvGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '40px', maxWidth: '1300px', margin: '0 auto' },
-    srvCard: (id) => ({ backgroundColor: theme.bg, border: `1px solid ${hoveredCard === id ? theme.cyan : theme.border}`, padding: '40px', borderRadius: '6px', transition: 'all 0.3s ease', boxShadow: hoveredCard === id ? theme.glow : 'none' }),
-    srvCardTitle: { fontSize: '20px', fontWeight: 700, marginBottom: '20px', borderBottom: `1px solid ${theme.border}`, paddingBottom: '15px' },
+    servicesSec: { padding: isMobile ? '60px 20px' : '100px 60px', backgroundColor: theme.card, borderTop: `1px solid ${theme.border}`, borderBottom: `1px solid ${theme.border}` },
+    secTitle: { textAlign: 'center', fontSize: isMobile ? '28px' : '42px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '15px' },
+    secSub: { textAlign: 'center', color: theme.cyan, fontSize: isMobile ? '12px' : '14px', textTransform: 'uppercase', letterSpacing: '3px', marginBottom: isMobile ? '40px' : '70px' },
+    srvGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', maxWidth: '1300px', margin: '0 auto' },
+    srvCard: (id) => ({ backgroundColor: theme.bg, border: `1px solid ${hoveredCard === id ? theme.cyan : theme.border}`, padding: isMobile ? '25px' : '40px', borderRadius: '6px', transition: 'all 0.3s ease', boxShadow: hoveredCard === id ? theme.glow : 'none' }),
+    srvCardTitle: { fontSize: '18px', fontWeight: 700, marginBottom: '20px', borderBottom: `1px solid ${theme.border}`, paddingBottom: '15px' },
     srvList: { listStyle: 'none', color: theme.muted, fontSize: '14px', lineHeight: '2.3', padding: 0, margin: 0 },
-    configSec: { padding: '100px 40px', maxWidth: '1300px', margin: '0 auto' },
-    calcGrid: { display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '50px' },
-    panel: { backgroundColor: theme.card, border: `1px solid ${theme.border}`, borderRadius: '8px', padding: '45px' },
+    configSec: { padding: isMobile ? '60px 15px' : '100px 40px', maxWidth: '1300px', margin: '0 auto' },
+    calcGrid: { display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 1fr', gap: isMobile ? '30px' : '50px' },
+    panel: { backgroundColor: theme.card, border: `1px solid ${theme.border}`, borderRadius: '8px', padding: isMobile ? '25px 20px' : '45px' },
     panelTitle: { fontSize: '18px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '25px', borderBottom: `1px solid ${theme.border}`, paddingBottom: '12px', color: theme.cyan },
     group: { marginBottom: '35px' },
     label: { display: 'block', marginBottom: '12px', color: theme.muted, fontWeight: 700, textTransform: 'uppercase', fontSize: '12px', letterSpacing: '1.5px' },
-    select: { width: '100%', padding: '16px', backgroundColor: theme.bg, border: `1px solid ${theme.border}`, borderRadius: '4px', color: '#fff', fontSize: '15px', outline: 'none' },
+    select: { width: '100%', padding: '16px', backgroundColor: theme.bg, border: `1px solid ${theme.border}`, borderRadius: '4px', color: '#fff', fontSize: '15px', outline: 'none', boxSizing: 'border-box' },
     itemCard: (isChecked) => ({ display: 'flex', flexDirection: 'column', background: isChecked ? 'rgba(0, 240, 255, 0.02)' : 'transparent', padding: '20px', borderRadius: '4px', marginBottom: '15px', border: `1px solid ${isChecked ? theme.cyan : theme.border}`, cursor: 'pointer' }),
-    itemHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' },
+    itemHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', marginBottom: '6px' },
     itemDesc: { fontSize: '13px', color: theme.muted, lineHeight: 1.45 },
-    checkbox: { marginRight: '12px', width: '18px', height: '18px', accentColor: theme.cyan, cursor: 'pointer' },
+    checkbox: { marginRight: '12px', minWidth: '18px', minHeight: '18px', width: '18px', height: '18px', accentColor: theme.cyan, cursor: 'pointer' },
     priceBox: { textAlign: 'center', background: 'rgba(0,240,255,0.01)', border: `1px solid rgba(0, 240, 255, 0.15)`, borderRadius: '4px', padding: '30px', margin: '20px 0' },
-    amount: { fontSize: '54px', fontWeight: 900, color: theme.cyan, marginTop: '5px', textShadow: '0 0 20px rgba(0,240,255,0.25)' },
+    amount: { fontSize: isMobile ? '42px' : '54px', fontWeight: 900, color: theme.cyan, marginTop: '5px', textShadow: '0 0 20px rgba(0,240,255,0.25)' },
     input: { width: '100%', padding: '16px', backgroundColor: theme.bg, border: `1px solid ${theme.border}`, borderRadius: '4px', color: '#fff', fontSize: '15px', marginBottom: '20px', outline: 'none', boxSizing: 'border-box' },
-    btn: (isDisabled, color = theme.cyan) => ({ display: 'block', width: '100%', padding: '18px', background: isDisabled ? '#161b26' : `linear-gradient(135deg, ${color}, #00bcff)`, color: isDisabled ? '#47536b' : '#000', border: 'none', borderRadius: '4px', fontSize: '15px', fontWeight: 800, cursor: isDisabled ? 'not-allowed' : 'pointer', textTransform: 'uppercase', letterSpacing: '1.5px', boxShadow: isDisabled ? 'none' : theme.glow, opacity: isDisabled ? 0.6 : 1 }),
-    faqSec: { padding: '100px 40px', maxWidth: '900px', margin: '0 auto' },
+    btn: (isDisabled, color = theme.cyan) => ({ display: 'block', width: '100%', padding: '18px', background: isDisabled ? '#161b26' : `linear-gradient(135deg, ${color}, #00bcff)`, color: isDisabled ? '#47536b' : '#000', border: 'none', borderRadius: '4px', fontSize: '15px', fontWeight: 800, cursor: isDisabled ? 'not-allowed' : 'pointer', textTransform: 'uppercase', letterSpacing: '1.5px', boxShadow: isDisabled ? 'none' : theme.glow, opacity: isDisabled ? 0.6 : 1, boxSizing: 'border-box' }),
+    faqSec: { padding: isMobile ? '60px 15px' : '100px 40px', maxWidth: '900px', margin: '0 auto' },
     faqItem: (isOpen) => ({ backgroundColor: theme.card, border: `1px solid ${isOpen ? theme.cyan : theme.border}`, borderRadius: '4px', marginBottom: '15px', padding: '24px', cursor: 'pointer' }),
-    faqQuestion: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '17px', fontWeight: 600 },
+    faqQuestion: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '15px', fontSize: '16px', fontWeight: 600 },
     faqAnswer: { color: theme.muted, marginTop: '15px', fontSize: '14px', lineHeight: 1.65, borderTop: `1px solid ${theme.border}`, paddingTop: '15px' },
-    toastBox: (type) => ({ position: 'fixed', bottom: '30px', right: '30px', backgroundColor: theme.card, border: `1px solid ${type === 'success' ? theme.cyan : '#ff4a4a'}`, padding: '20px 30px', borderRadius: '4px', boxShadow: type === 'success' ? theme.glow : theme.errorGlow, zIndex: 2000, display: 'flex', alignItems: 'center', gap: '15px' }),
-    receiptRow: { display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: theme.muted, marginBottom: '6px' },
-    statusLogContainer: { fontFamily: 'monospace', fontSize: '12px', background: '#05080f', padding: '15px', border: `1px solid ${theme.border}`, marginTop: '15px', borderRadius: '4px' },
-    statusLine: (isActive) => ({ color: isActive ? theme.green : theme.muted, display: 'flex', gap: '10px', marginBottom: '5px', textShadow: isActive ? `0 0 5px ${theme.green}44` : 'none' }),
+    toastBox: (type) => ({ position: 'fixed', bottom: '20px', right: '20px', left: isMobile ? '20px' : 'auto', backgroundColor: theme.card, border: `1px solid ${type === 'success' ? theme.cyan : '#ff4a4a'}`, padding: '20px 30px', borderRadius: '4px', boxShadow: type === 'success' ? theme.glow : theme.errorGlow, zIndex: 2000, display: 'flex', alignItems: 'center', gap: '15px' }),
+    receiptRow: { display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: theme.muted, marginBottom: '6px', gap: '10px' },
+    statusLogContainer: { fontFamily: 'monospace', fontSize: '12px', background: '#05080f', padding: '15px', border: `1px solid ${theme.border}`, marginTop: '15px', borderRadius: '4px', overflowX: 'auto' },
+    statusLine: (isActive) => ({ color: isActive ? theme.green : theme.muted, display: 'flex', gap: '10px', marginBottom: '5px', textShadow: isActive ? `0 0 5px ${theme.green}44` : 'none', whiteSpace: isMobile ? 'normal' : 'nowrap' }),
     footer: { padding: '40px 20px', borderTop: `1px solid ${theme.border}`, textAlign: 'center', fontSize: '13px', color: theme.muted, letterSpacing: '1px' }
   };
 
@@ -433,17 +443,17 @@ export default function App() {
         <div style={styles.logo} onClick={() => setCurrentView('main')}>Emergency<span style={styles.cyanText}>PC</span></div>
         <ul style={styles.menu}>
           <li><button className="link-btn" style={styles.link} onClick={() => setCurrentView('main')}>Główna</button></li>
-          <li><button className="link-btn" style={styles.link} onClick={() => handleNavigation('services')}>Zakres Usług</button></li>
-          <li><button className="link-btn" style={styles.link} onClick={() => handleNavigation('configurator')}>Kalkulator i zgłoszenia</button></li>
+          <li><button className="link-btn" style={styles.link} onClick={() => handleNavigation('services')}>Usługi</button></li>
+          <li><button className="link-btn" style={styles.link} onClick={() => handleNavigation('configurator')}>Kalkulator</button></li>
           <li><button className="link-btn" style={styles.link} onClick={() => handleNavigation('faq')}>FAQ</button></li>
           {userSession && (
-            <li><button className="link-btn" style={{...styles.link, color: theme.cyan}} onClick={() => setCurrentView('panel')}>[ {userSession.role === 'admin' ? 'PANEL ADMINISTRATORA' : 'TWOJE ZAMÓWIENIA'} ]</button></li>
+            <li><button className="link-btn" style={{...styles.link, color: theme.cyan}} onClick={() => setCurrentView('panel')}>[ {userSession.role === 'admin' ? 'ADMIN' : 'PANEL'} ]</button></li>
           )}
           <li>
             {userSession ? (
               <button className="menu-btn-nav" style={styles.navBtn(theme.magenta)} onClick={handleLogout}>WYLOGUJ ({userSession.email.split('@')[0]})</button>
             ) : (
-              <button className="menu-btn-nav" style={styles.navBtn(theme.cyan)} onClick={() => setCurrentView('login')}>ZALOGUJ SIĘ</button>
+              <button className="menu-btn-nav" style={styles.navBtn(theme.cyan)} onClick={() => setCurrentView('login')}>ZALOGUJ</button>
             )}
           </li>
         </ul>
@@ -463,7 +473,7 @@ export default function App() {
                 <div style={styles.statNum}>100%</div>
                 <div style={styles.statLabel}>Bezpieczny montaż</div>
               </div>
-              <div style={{...styles.statBox, borderLeft: `1px solid ${theme.border}`, borderRight: `1px solid ${theme.border}`}}>
+              <div style={{...styles.statBox, borderLeft: isMobile ? 'none' : `1px solid ${theme.border}`, borderRight: isMobile ? 'none' : `1px solid ${theme.border}`}}>
                 <div style={styles.statNum}>&lt;24h</div>
                 <div style={styles.statLabel}>Czas reakcji serwisu</div>
               </div>
@@ -474,53 +484,54 @@ export default function App() {
             </div>
           </section>
 
-{/* ZAKRES DZIAŁAŃ */}
-<section id="services" className="reveal" style={styles.servicesSec}>
-  <h2 style={styles.secTitle}>Profesjonalny Zakres Działań</h2>
-  <div style={styles.secSub}>Pełne wsparcie techniczne: od diagnostyki, przez tuning, aż po customowe buildy</div>
-  
-  <div style={styles.srvGrid}>
-    {/* 1. Gaming Tuning */}
-    <div style={styles.srvCard(1)} onMouseEnter={() => setHoveredCard(1)} onMouseLeave={() => setHoveredCard(null)}>
-      <div style={styles.srvCardTitle}>⚡ Low-Latency & Gaming Tuning</div>
-      <ul style={styles.srvList}>
-        <li>— Redukcja systemowych opóźnień wejściowych (Input Lag)</li>
-        <li>— Kompleksowy debloating systemów Windows 10 / 11</li>
-        <li>— Optymalizacja 1% Low FPS w tytułach e-sportowych</li>
-      </ul>
-    </div>
+          {/* ZAKRES DZIAŁAŃ */}
+          <section id="services" className="reveal" style={styles.servicesSec}>
+            <h2 style={styles.secTitle}>Profesjonalny Zakres Działań</h2>
+            <div style={styles.secSub}>Pełne wsparcie techniczne: od diagnostyki, przez tuning, aż po customowe buildy</div>
+            
+            <div style={styles.srvGrid}>
+              {/* 1. Gaming Tuning */}
+              <div style={styles.srvCard(1)} onMouseEnter={() => setHoveredCard(1)} onMouseLeave={() => setHoveredCard(null)}>
+                <div style={styles.srvCardTitle}>⚡ Low-Latency & Gaming Tuning</div>
+                <ul style={styles.srvList}>
+                  <li>— Redukcja systemowych opóźnień wejściowych (Input Lag)</li>
+                  <li>— Kompleksowy debloating systemów Windows 10 / 11</li>
+                  <li>— Optymalizacja 1% Low FPS w tytułach e-sportowych</li>
+                </ul>
+              </div>
 
-    {/* 2. Ekspercki Hardware */}
-    <div style={styles.srvCard(2)} onMouseEnter={() => setHoveredCard(2)} onMouseLeave={() => setHoveredCard(null)}>
-      <div style={styles.srvCardTitle}>🔧 Ekspercki Hardware</div>
-      <ul style={styles.srvList}>
-        <li>— Profesjonalny montaż jednostek (Custom Loop / AIO)</li>
-        <li>— Wymiana past termoprzewodzących (ciekły metal / high-end)</li>
-        <li>— Diagnostyka termiczna i undervolting</li>
-      </ul>
-    </div>
+              {/* 2. Ekspercki Hardware */}
+              <div style={styles.srvCard(2)} onMouseEnter={() => setHoveredCard(2)} onMouseLeave={() => setHoveredCard(null)}>
+                <div style={styles.srvCardTitle}>🔧 Ekspercki Hardware</div>
+                <ul style={styles.srvList}>
+                  <li>— Profesjonalny montaż jednostek (Custom Loop / AIO)</li>
+                  <li>— Wymiana past termoprzewodzących (ciekły metal / high-end)</li>
+                  <li>— Diagnostyka termiczna i undervolting</li>
+                </ul>
+              </div>
 
-    {/* 3. Diagnostyka (NOWE) */}
-    <div style={styles.srvCard(3)} onMouseEnter={() => setHoveredCard(3)} onMouseLeave={() => setHoveredCard(null)}>
-      <div style={styles.srvCardTitle}>🆘 Diagnostyka i Ratunek</div>
-      <ul style={styles.srvList}>
-        <li>— Analiza niestabilności i błędów krytycznych (BSOD)</li>
-        <li>— Odzyskiwanie systemu i usuwanie malware</li>
-        <li>— Weryfikacja sprawności podzespołów pod obciążeniem</li>
-      </ul>
-    </div>
+              {/* 3. Diagnostyka */}
+              <div style={styles.srvCard(3)} onMouseEnter={() => setHoveredCard(3)} onMouseLeave={() => setHoveredCard(null)}>
+                <div style={styles.srvCardTitle}>🆘 Diagnostyka i Ratunek</div>
+                <ul style={styles.srvList}>
+                  <li>— Analiza niestabilności i błędów krytycznych (BSOD)</li>
+                  <li>— Odzyskiwanie systemu i usuwanie malware</li>
+                  <li>— Weryfikacja sprawności podzespołów pod obciążeniem</li>
+                </ul>
+              </div>
 
-    {/* 4. Consulting (NOWE) */}
-    <div style={styles.srvCard(4)} onMouseEnter={() => setHoveredCard(4)} onMouseLeave={() => setHoveredCard(null)}>
-      <div style={styles.srvCardTitle}>💻 Consulting & Upgrade Path</div>
-      <ul style={styles.srvList}>
-        <li>— Dobór podzespołów pod specyficzne budżety i AI/Render</li>
-        <li>— Planowanie ścieżki modernizacji (Future-Proofing)</li>
-        <li>— Pomoc w zakupie i weryfikacji sprzętu używanego</li>
-      </ul>
-    </div>
-  </div>
-</section>
+              {/* 4. Consulting */}
+              <div style={styles.srvCard(4)} onMouseEnter={() => setHoveredCard(4)} onMouseLeave={() => setHoveredCard(null)}>
+                <div style={styles.srvCardTitle}>💻 Consulting & Upgrade Path</div>
+                <ul style={styles.srvList}>
+                  <li>— Dobór podzespołów pod specyficzne budżety i AI/Render</li>
+                  <li>— Planowanie ścieżki modernizacji (Future-Proofing)</li>
+                  <li>— Pomoc w zakupie i weryfikacji sprzętu używanego</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
           {/* KREATOR */}
           <section id="configurator" className="reveal" style={styles.configSec}>
             <h2 style={styles.secTitle}>Kreator Zgłoszeń Serwisowych</h2>
@@ -549,7 +560,7 @@ export default function App() {
                             <input type="checkbox" checked={isChecked} readOnly style={styles.checkbox} />
                             {srv.label}
                           </span>
-                          <span style={{color: theme.cyan, fontWeight: 700}}>{srv.price} zł</span>
+                          <span style={{color: theme.cyan, fontWeight: 700, whiteSpace: 'nowrap'}}>{srv.price} zł</span>
                         </div>
                         <div style={styles.itemDesc}>{srv.desc}</div>
                       </div>
@@ -568,7 +579,7 @@ export default function App() {
                             <input type="checkbox" checked={isChecked} readOnly style={styles.checkbox} />
                             {srv.label}
                           </span>
-                          <span style={{color: theme.cyan, fontWeight: 700}}>{srv.price} zł</span>
+                          <span style={{color: theme.cyan, fontWeight: 700, whiteSpace: 'nowrap'}}>{srv.price} zł</span>
                         </div>
                         <div style={styles.itemDesc}>{srv.desc}</div>
                       </div>
@@ -578,7 +589,7 @@ export default function App() {
               </div>
 
               {/* KOSZTORYS I ELEKTRONICZNE OTP */}
-              <div style={{ ...styles.panel, display: 'flex', flexDirection: 'column', justifyBetween: 'space-between' }}>
+              <div style={{ ...styles.panel, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
                   <div style={styles.panelTitle}>2. Wstępny kosztorys</div>
                   <div style={{ marginBottom: '15px', background: 'rgba(0,0,0,0.2)', padding: '15px', borderRadius: '4px', border: `1px solid ${theme.border}` }}>
@@ -589,19 +600,19 @@ export default function App() {
                     {device.type !== '0' && (
                       <div style={styles.receiptRow}>
                         <span>Diagnostyka wstępna ({device.type === 'pc' ? 'PC' : 'Laptop'})</span>
-                        <span>{device.price} zł</span>
+                        <span style={{whiteSpace: 'nowrap'}}>{device.price} zł</span>
                       </div>
                     )}
                     {getSelectedServicesList().map((item, idx) => (
                       <div key={idx} style={styles.receiptRow}>
                         <span>{item.label}</span>
-                        <span>{item.price} zł</span>
+                        <span style={{whiteSpace: 'nowrap'}}>{item.price} zł</span>
                       </div>
                     ))}
                     {formData.urgency === 'express' && (
                       <div style={{ ...styles.receiptRow, color: theme.cyan }}>
                         <span>Dopłata za tryb ekspresowy</span>
-                        <span>+60 zł</span>
+                        <span style={{whiteSpace: 'nowrap'}}>+60 zł</span>
                       </div>
                     )}
                   </div>
@@ -613,7 +624,7 @@ export default function App() {
 
                   <div style={styles.group}>
                     <label style={styles.label}>Tryb realizacji:</label>
-                    <div style={{display: 'flex', gap: '20px', marginTop: '10px'}}>
+                    <div style={{display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '15px', marginTop: '10px'}}>
                       <label style={{flex: 1, display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.01)', padding: '15px', border: `1px solid ${formData.urgency === 'normal' ? theme.cyan : theme.border}`, borderRadius: '4px', cursor: 'pointer'}}>
                         <input type="radio" name="urgency" checked={formData.urgency === 'normal'} onChange={() => setFormData({...formData, urgency: 'normal'})} style={{marginRight: '12px', accentColor: theme.cyan}} />
                         <div>
@@ -638,8 +649,8 @@ export default function App() {
                   <div style={{ background: 'rgba(0,240,255,0.01)', padding: '20px', border: `1px solid ${theme.border}`, marginBottom: '20px', borderRadius: '4px' }}>
                     {userSession ? (
                       <>
-                        <label style={styles.label}>Profil powiązany ze zgłoszeniem:</label>
-                        <div style={{color: theme.cyan, fontSize: '15px', fontWeight: 'bold', marginBottom: '15px'}}>{userSession.email}</div>
+                        <label style={styles.label}>Profil ze zgłoszeniem:</label>
+                        <div style={{color: theme.cyan, fontSize: '15px', fontWeight: 'bold', marginBottom: '15px', wordBreak: 'break-word'}}>{userSession.email}</div>
                         
                         {emailStep !== 'verified' ? (
                           <div>
@@ -655,7 +666,7 @@ export default function App() {
                           </div>
                         ) : (
                           <div style={{ color: theme.green, fontWeight: 'bold', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={styles.liveDot}></span> AUTORYZACJA ZGŁOSZENIA ZWERYFIKOWANA
+                            <span style={styles.liveDot}></span> AUTORYZACJA ZWERYFIKOWANA
                           </div>
                         )}
                       </>
@@ -667,7 +678,7 @@ export default function App() {
                     )}
                   </div>
 
-                  <label style={styles.label}>Specyfikacja platformy / Główne objawy:</label>
+                  <label style={styles.label}>Specyfikacja platformy / Objawy:</label>
                   <input type="text" placeholder="np. i7-14700K, spadki klatek w Valorancie..." style={styles.input} value={formData.desc} onChange={(e) => setFormData({ ...formData, desc: e.target.value })} />
 
                   {/* CHECKBOX I LINK DO REGULAMINU */}
@@ -675,7 +686,7 @@ export default function App() {
                     id="reg-checkbox-container"
                     style={{ 
                       display: 'flex', 
-                      alignItems: 'center', 
+                      alignItems: 'flex-start', 
                       gap: '10px', 
                       marginTop: '20px', 
                       padding: '15px', 
@@ -691,9 +702,9 @@ export default function App() {
                       id="reg-accept"
                       checked={acceptedRegulations}
                       onChange={(e) => setAcceptedRegulations(e.target.checked)}
-                      style={{ cursor: 'pointer', width: '18px', height: '18px', accentColor: theme.cyan }}
+                      style={{ cursor: 'pointer', minWidth: '18px', minHeight: '18px', width: '18px', height: '18px', accentColor: theme.cyan, marginTop: '2px' }}
                     />
-                    <label htmlFor="reg-accept" style={{ fontSize: '13px', color: '#fff', cursor: 'pointer', userSelect: 'none' }}>
+                    <label htmlFor="reg-accept" style={{ fontSize: '13px', color: '#fff', cursor: 'pointer', userSelect: 'none', lineHeight: '1.4' }}>
                       Oświadczam, że zapoznałem się i akceptuję{' '}
                       <a 
                         href="#regulamin" 
@@ -728,7 +739,7 @@ export default function App() {
               <div key={idx} style={styles.faqItem(activeFaq === idx)} onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}>
                 <div style={styles.faqQuestion}>
                   <span>{f.q}</span>
-                  <span>{activeFaq === idx ? '▲' : '▼'}</span>
+                  <span style={{fontSize: '12px'}}>{activeFaq === idx ? '▲' : '▼'}</span>
                 </div>
                 {activeFaq === idx && <div style={styles.faqAnswer}>{f.a}</div>}
               </div>
@@ -739,7 +750,7 @@ export default function App() {
 
       {/* VIEW: LOGOWANIE / REJESTRACJA */}
       {currentView === 'login' && (
-        <div style={{ maxWidth: '450px', margin: '80px auto', padding: '20px' }}>
+        <div style={{ maxWidth: '450px', margin: isMobile ? '40px auto' : '80px auto', padding: '20px' }}>
           <div style={styles.panel}>
             <div style={{ ...styles.panelTitle, color: isRegisterMode ? theme.purple : theme.cyan, textAlign: 'center' }}>
               {isRegisterMode ? '[ KREATOR NOWEGO PROFILU ]' : '[ AUTORYZACJA RDZENIA UŻYTKOWNIKA ]'}
@@ -769,33 +780,33 @@ export default function App() {
 
       {/* VIEW: PANEL ZAMÓWIEŃ */}
       {currentView === 'panel' && userSession && (
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '20px 15px' : '40px' }}>
           
           {/* A. WIDOK ADMINISTRATORA */}
           {userSession.role === 'admin' && (
             <div>
-              <h1 style={{ color: theme.magenta, fontSize: '32px', textShadow: `0 0 10px ${theme.magenta}44`, fontWeight: 900, marginBottom: '5px' }}>[CORE_ADMIN_NODE]</h1>
+              <h1 style={{ color: theme.magenta, fontSize: isMobile ? '24px' : '32px', textShadow: `0 0 10px ${theme.magenta}44`, fontWeight: 900, marginBottom: '5px' }}>[CORE_ADMIN_NODE]</h1>
               <div style={styles.secSub}>Zarządzanie bazą danych MongoDB w czasie rzeczywistym</div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1.2fr', gap: '40px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.8fr 1.2fr', gap: isMobile ? '20px' : '40px' }}>
                 <div style={styles.panel}>
                   <div style={styles.panelTitle}>Globalna Baza Zgłoszeń (`MongoDB / tickets`)</div>
                   {tickets.length === 0 ? (
                     <p style={{ color: theme.muted, fontSize: '13px' }}>Brak pobranych zleceń w bazie MongoDB.</p>
                   ) : (
                     tickets.map(t => (
-                      <div key={t.id} style={{ background: '#060910', padding: '20px', border: `1px solid ${theme.border}`, marginBottom: '15px', borderRadius: '4px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ color: theme.cyan, fontWeight: 'bold' }}>{t.id}</span>
-                          <span style={{ color: theme.green, fontWeight: 'bold' }}>{t.price} zł</span>
+                      <div key={t.id} style={{ background: '#060910', padding: isMobile ? '15px' : '20px', border: `1px solid ${theme.border}`, marginBottom: '15px', borderRadius: '4px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px' }}>
+                          <span style={{ color: theme.cyan, fontWeight: 'bold', wordBreak: 'break-all', fontSize: '13px' }}>{t.id}</span>
+                          <span style={{ color: theme.green, fontWeight: 'bold', whiteSpace: 'nowrap' }}>{t.price} zł</span>
                         </div>
-                        <div style={{ fontSize: '13px', margin: '6px 0' }}>Urządzenie: {t.deviceName} | Klient: <span style={{ color: theme.cyan }}>{t.clientEmail}</span></div>
+                        <div style={{ fontSize: '13px', margin: '8px 0', wordBreak: 'break-word' }}>Urządzenie: {t.deviceName} | Klient: <span style={{ color: theme.cyan }}>{t.clientEmail}</span></div>
                         <div style={{ fontSize: '12px', color: theme.muted, marginBottom: '15px' }}>Uwagi: {t.desc}</div>
                         
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '4px', border: `1px solid ${theme.border}` }}>
-                          <span style={{ fontSize: '12px', fontWeight: 'bold', color: theme.magenta }}>Modyfikuj status live:</span>
+                        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', gap: '10px', background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '4px', border: `1px solid ${theme.border}` }}>
+                          <span style={{ fontSize: '12px', fontWeight: 'bold', color: theme.magenta }}>Status live:</span>
                           <select 
-                            style={{ ...styles.select, width: 'auto', padding: '6px 12px', fontSize: '13px', color: theme.cyan }} 
+                            style={{ ...styles.select, width: '100%', padding: '6px 12px', fontSize: '13px', color: theme.cyan }} 
                             value={t.status} 
                             onChange={(e) => updateTicketStatus(t.id, e.target.value)}
                           >
@@ -818,7 +829,7 @@ export default function App() {
                       <div style={{color: theme.muted, fontSize: '11px'}}>Brak wygenerowanych kodów w tej sesji okna. Kody wysyłane są bezpośrednio na skrzynki pocztowe klientów za pomocą SMTP.</div>
                     ) : (
                       emailOutbox.map((m, idx) => (
-                        <div key={idx} style={{ fontSize: '11px', marginBottom: '15px', borderBottom: '1px dashed rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
+                        <div key={idx} style={{ fontSize: '11px', marginBottom: '15px', borderBottom: '1px dashed rgba(255,255,255,0.1)', paddingBottom: '10px', wordBreak: 'break-word' }}>
                           <div style={{ color: theme.magenta }}>TO: {m.to}</div>
                           <div style={{ fontWeight: 'bold', color: '#fff' }}>SUBJECT: {m.subject}</div>
                           <div style={{ color: theme.muted }}>BODY: {m.body}</div>
@@ -835,7 +846,7 @@ export default function App() {
           {userSession.role === 'client' && (
             <div>
               <h2 style={styles.secTitle}>Panel Monitorowania Zgłoszeń</h2>
-              <div style={styles.secSub}>Zalogowany profil: {userSession.email}</div>
+              <div style={styles.secSub} style={{textAlign:'center', color: theme.muted, marginBottom:'30px', fontSize:'14px'}}>Zalogowany profil: <span style={{color: theme.cyan}}>{userSession.email}</span></div>
 
               <div style={styles.panel}>
                 <div style={styles.panelTitle}>Twoje Aktywne Zlecenia w Bazie</div>
@@ -844,9 +855,9 @@ export default function App() {
                 ) : (
                   clientTickets.map(t => (
                     <div key={t.id} style={{ borderBottom: `1px solid ${theme.border}`, paddingBottom: '25px', marginBottom: '25px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '16px' }}>
-                        <span style={{ color: theme.cyan }}>{t.id}</span>
-                        <span style={{ color: '#fff' }}>{t.price} zł</span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '16px', gap: '10px' }}>
+                        <span style={{ color: theme.cyan, wordBreak: 'break-all' }}>{t.id}</span>
+                        <span style={{ color: '#fff', whiteSpace: 'nowrap' }}>{t.price} zł</span>
                       </div>
                       <div style={{ fontSize: '14px', margin: '8px 0', color: theme.muted }}>Urządzenie: <span style={{color: '#fff'}}>{t.deviceName}</span> | Opis: {t.desc}</div>
                       
@@ -867,7 +878,7 @@ export default function App() {
         </div>
       )}
 
-      {/* GIGANTYCZNY MODAL REGULAMINU - WYDZIELONY NA SAM DÓŁ STRUKTURY JSX */}
+      {/* MODAL REGULAMINU */}
       {isRegulationsOpen && (
         <div style={{
           position: 'fixed',
@@ -883,9 +894,9 @@ export default function App() {
           backdropFilter: 'blur(10px)'
         }}>
           <div style={{
-            width: '90%',
+            width: '95%',
             maxWidth: '850px',
-            height: '80vh',
+            height: '90vh',
             background: '#060913',
             border: `1px solid ${theme.cyan}`,
             boxShadow: `0 0 40px ${theme.cyan}33`,
@@ -896,7 +907,7 @@ export default function App() {
             position: 'relative'
           }}>
             
-            {/* NAGŁÓWEK MODALU ZE STRZAŁKĄ COFANIA (ZACHOWUJE DANE) */}
+            {/* NAGŁÓWEK MODALU */}
             <div style={{
               padding: '20px 25px',
               borderBottom: `1px solid ${theme.border}`,
@@ -914,57 +925,56 @@ export default function App() {
                   padding: '8px 15px',
                   borderRadius: '4px',
                   cursor: 'pointer',
-                  fontSize: '16px',
+                  fontSize: '14px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
                   fontWeight: 'bold',
-                  transition: 'all 0.2s'
+                  transition: 'all 0.2s',
+                  whiteSpace: 'nowrap'
                 }}
-                onMouseEnter={(e) => { e.target.style.background = `${theme.cyan}22` }}
-                onMouseLeave={(e) => { e.target.style.background = 'none' }}
               >
                 ← COFNIJ
               </button>
-              <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#fff', letterSpacing: '1px' }}>
-                REGULAMIN ŚWIADCZENIA USŁUG // EMERGENCY_PC_LAW
+              <div style={{ fontSize: isMobile ? '13px' : '16px', fontWeight: 'bold', color: '#fff', letterSpacing: '1px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                REGULAMIN // EMERGENCY_PC_LAW
               </div>
             </div>
 
-            <div style={{ padding: '30px', overflowY: 'auto', fontSize: '13px', lineHeight: '1.8', color: '#8fa0bc' }}>
-  <p style={{ textAlign: 'center', fontWeight: 'bold', color: theme.cyan, marginBottom: '25px', letterSpacing: '2px' }}>
-    REGULAMIN ŚWIADCZENIA USŁUG SERWISOWYCH EMERGENCYPC.PL
-  </p>
-  
-  <h4 style={{ color: '#fff', marginBottom: '8px' }}>§1. POSTANOWIENIA OGÓLNE I ZAWARCIE UMOWY</h4>
-  <p>1. Niniejszy dokument określa zasady współpracy pomiędzy EmergencyPC (Serwis) a Zleceniodawcą (Klient).<br />
-  2. Akceptacja regulaminu oraz wysyłka formularza poprzez system autoryzacji OTP jest równoznaczna z zawarciem prawnie wiążącej umowy o świadczenie usług serwisowych.<br />
-  3. Prezentowany w serwisie konfigurator cenowy ma charakter poglądowy. Ostateczna wycena usług następuje po fizycznej diagnostyce sprzętu.</p>
+            <div style={{ padding: isMobile ? '20px 15px' : '30px', overflowY: 'auto', fontSize: '13px', lineHeight: '1.8', color: '#8fa0bc' }}>
+              <p style={{ textAlign: 'center', fontWeight: 'bold', color: theme.cyan, marginBottom: '25px', letterSpacing: '2px' }}>
+                REGULAMIN ŚWIADCZENIA USŁUG SERWISOWYCH EMERGENCYPC.PL
+              </p>
+              
+              <h4 style={{ color: '#fff', marginBottom: '8px' }}>§1. POSTANOWIENIA OGÓLNE I ZAWARCIE UMOWY</h4>
+              <p>1. Niniejszy dokument określa zasady współpracy pomiędzy EmergencyPC (Serwis) a Zleceniodawcą (Klient).<br />
+              2. Akceptacja regulaminu oraz wysyłka formularza poprzez system autoryzacji OTP jest równoznaczna z zawarciem prawnie wiążącej umowy o świadczenie usług serwisowych.<br />
+              3. Prezentowany w serwisie konfigurator cenowy ma charakter poglądowy. Ostateczna wycena usług następuje po fizycznej diagnostyce sprzętu.</p>
 
-  <h4 style={{ color: '#fff', marginTop: '20px', marginBottom: '8px' }}>§2. GWARANCJA, ODPOWIEDZIALNOŚĆ I BEZPIECZEŃSTWO DANYCH</h4>
-  <p style={{ borderLeft: `3px solid ${theme.cyan}`, paddingLeft: '15px', background: 'rgba(0, 240, 255, 0.03)', padding: '10px', borderRadius: '4px' }}>
-    1. Serwis EmergencyPC dokłada należytej staranności w procesach serwisowych. Klient przyjmuje do wiadomości, że zaawansowane procedury (flashowanie BIOS/UEFI, tuning systemowy, testy obciążeniowe) niosą ze sobą ryzyko systemowe.<br />
-    2. <strong>Zobowiązanie Klienta:</strong> Klient oświadcza, iż przed dostarczeniem sprzętu dokonał pełnej kopii zapasowej (Backup) swoich danych. Serwis nie ponosi odpowiedzialności za utratę danych wynikającą z awarii sprzętowych, procedur optymalizacji czy błędów nośników, o ile nie wynika ona z rażącego niedbalstwa technika.<br />
-    3. Serwis nie ponosi odpowiedzialności za niekompatybilność oprogramowania Klienta z wprowadzonymi ustawieniami optymalizacyjnymi (np. Advanced Gaming Tuning).
-  </p>
+              <h4 style={{ color: '#fff', marginTop: '20px', marginBottom: '8px' }}>§2. GWARANCJA, ODPOWIEDZIALNOŚĆ I BEZPIECZEŃSTWO DANYCH</h4>
+              <p style={{ borderLeft: `3px solid ${theme.cyan}`, paddingLeft: '15px', background: 'rgba(0, 240, 255, 0.03)', padding: '10px', borderRadius: '4px' }}>
+                1. Serwis EmergencyPC dokłada należytej staranności w procesach serwisowych. Klient przyjmuje do wiadomości, że zaawansowane procedury (flashowanie BIOS/UEFI, tuning systemowy, testy obciążeniowe) niosą ze sobą ryzyko systemowe.<br />
+                2. <strong>Zobowiązanie Klienta:</strong> Klient oświadcza, iż przed dostarczeniem sprzętu dokonał pełnej kopii zapasowej (Backup) swoich danych. Serwis nie ponosi odpowiedzialności za utratę danych wynikającą z awarii sprzętowych, procedur optymalizacji czy błędów nośników, o ile nie wynika ona z rażącego niedbalstwa technika.<br />
+                3. Serwis nie ponosi odpowiedzialności za niekompatybilność oprogramowania Klienta z wprowadzonymi ustawieniami optymalizacyjnymi (np. Advanced Gaming Tuning).
+              </p>
 
-  <h4 style={{ color: '#fff', marginTop: '20px', marginBottom: '8px' }}>§3. PRAWA KONSUMENCKIE I ODSTĄPIENIE OD UMOWY</h4>
-  <p>1. Klientowi przysługuje prawo do odstąpienia od umowy w terminie 14 dni. <br />
-  2. <strong>Zgoda na rozpoczęcie usług:</strong> Zlecając wykonanie naprawy/optymalizacji, Klient wyraża wyraźną zgodę na rozpoczęcie świadczenia usług przed upływem terminu do odstąpienia od umowy. W związku z tym, po pełnym wykonaniu usługi przez Serwis, prawo do odstąpienia od umowy wygasa. Jest to standardowa procedura dla usług serwisowych o charakterze technicznym.</p>
+              <h4 style={{ color: '#fff', marginTop: '20px', marginBottom: '8px' }}>§3. PRAWA KONSUMENCKIE I ODSTĄPIENIE OD UMOWY</h4>
+              <p>1. Klientowi przysługuje prawo do odstąpienia od umowy w terminie 14 dni. <br />
+              2. <strong>Zgoda na rozpoczęcie usług:</strong> Zlecając wykonanie naprawy/optymalizacji, Klient wyraża wyraźną zgodę na rozpoczęcie świadczenia usług przed upływem terminu do odstąpienia od umowy. W związku z tym, po pełnym wykonaniu usługi przez Serwis, prawo do odstąpienia od umowy wygasa. Jest to standardowa procedura dla usług serwisowych o charakterze technicznym.</p>
 
-  <h4 style={{ color: '#fff', marginTop: '20px', marginBottom: '8px' }}>§4. LICENCJE OPROGRAMOWANIA ORAZ RODO</h4>
-  <p>1. Klient oświadcza, że posiada legalne licencje na użytkowane oprogramowanie oraz system operacyjny. Serwis nie pełni roli weryfikatora legalności licencji i nie ponosi odpowiedzialności za naruszenia praw autorskich przez Klienta.<br />
-  2. <strong>Ochrona danych:</strong> Administratorem danych osobowych (e-mail, dane sprzętowe) jest EmergencyPC. Dane przetwarzane są wyłącznie w celu realizacji umowy. System autoryzacji OTP gwarantuje wyższy standard bezpieczeństwa poprzez rezygnację z przechowywania haseł stałych.</p>
+              <h4 style={{ color: '#fff', marginTop: '20px', marginBottom: '8px' }}>§4. LICENCJE OPROGRAMOWANIA ORAZ RODO</h4>
+              <p>1. Klient oświadcza, że posiada legalne licencje na użytkowane oprogramowanie oraz system operacyjny. Serwis nie pełni roli weryfikatora legalności licencji i nie ponosi odpowiedzialności za naruszenia praw autorskich przez Klienta.<br />
+              2. <strong>Ochrona danych:</strong> Administratorem danych osobowych (e-mail, dane sprzętowe) jest EmergencyPC. Dane przetwarzane są wyłącznie w celu realizacji umowy. System autoryzacji OTP gwarantuje wyższy standard bezpieczeństwa poprzez rezygnację z przechowywania haseł stałych.</p>
 
-  <h4 style={{ color: '#fff', marginTop: '20px', marginBottom: '8px' }}>§5. PROCEDURY MAGAZYNOWE I PORZUCENIE SPRZĘTU</h4>
-  <p>1. Odbiór sprzętu warunkowany jest pełnym rozliczeniem finansowym.<br />
-  2. W przypadku braku odbioru sprzętu w terminie 14 dni od monitu „Gotowy do odbioru”, naliczana jest opłata magazynowa w wysokości 15 PLN brutto za każdy dzień.<br />
-  3. Zgodnie z art. 180 Kodeksu Cywilnego, po przekroczeniu 90 dni zwłoki w odbiorze, sprzęt uznaje się za porzucony z zamiarem wyzbycia się własności na rzecz Serwisu, celem pokrycia kosztów utylizacji lub diagnostyki.</p>
-  
-  <p style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px', marginTop: '30px', fontSize: '11px', textAlign: 'center', color: theme.cyan, textTransform: 'uppercase', letterSpacing: '2px' }}>
-    EmergencyPC // Profesjonalna Infrastruktura Serwisowa // Dokument Kontraktowy v.2026
-  </p>
-</div>
+              <h4 style={{ color: '#fff', marginTop: '20px', marginBottom: '8px' }}>§5. PROCEDURY MAGAZYNOWE I PORZUCENIE SPRZĘTU</h4>
+              <p>1. Odbiór sprzętu warunkowany jest pełnym rozliczeniem finansowym.<br />
+              2. W przypadku braku odbioru sprzętu w terminie 14 dni od monitu „Gotowy do odbioru”, naliczana jest opłata magazynowa w wysokości 15 PLN brutto za każdy dzień.<br />
+              3. Zgodnie z art. 180 Kodeksu Cywilnego, po przekroczeniu 90 dni zwłoki w odbiorze, sprzęt uznaje się za porzucony z zamiarem wyzbycia się własności na rzecz Serwisu, celem pokrycia kosztów utylizacji lub diagnostyki.</p>
+              
+              <p style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px', marginTop: '30px', fontSize: '11px', textAlign: 'center', color: theme.cyan, textTransform: 'uppercase', letterSpacing: '2px' }}>
+                EmergencyPC // Profesjonalna Infrastruktura Serwisowa // Dokument Kontraktowy v.2026
+              </p>
+            </div>
 
             {/* DOLNY PRZYCISK ZAMKNIĘCIA */}
             <div style={{
