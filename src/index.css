@@ -14,13 +14,25 @@
 
 html {
   scroll-behavior: smooth;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
   margin: 0;
+  width: 100%;
+  max-width: 100%;
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: hidden;
   background: #04060a;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 button,

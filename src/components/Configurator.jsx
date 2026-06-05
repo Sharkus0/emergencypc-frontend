@@ -36,10 +36,10 @@ export default function Configurator() {
 
   const styles = {
     section: { padding: '80px 20px', backgroundColor: '#0a0c10' },
-    container: { maxWidth: '1000px', margin: '0 auto' },
+    container: { width: '100%', maxWidth: '1000px', margin: '0 auto' },
     title: { textAlign: 'center', fontSize: '32px', fontWeight: 800, textTransform: 'uppercase', marginBottom: '10px', color: '#fff' },
     subtitle: { textAlign: 'center', color: '#38bdf8', marginBottom: '50px', fontWeight: 500 },
-    grid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' },
+    grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '40px' },
     panel: { backgroundColor: '#14171c', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '30px' },
     panelTitle: { fontSize: '20px', marginBottom: '20px', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '10px', color: '#fff' },
     group: { marginBottom: '25px' },
