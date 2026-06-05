@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export default function Configurator() {
   const [device, setDevice] = useState({ type: '0', price: 0 });
